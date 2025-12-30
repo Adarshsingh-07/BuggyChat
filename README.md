@@ -66,24 +66,19 @@ Chat-App/
 
 ## ▶️ Run Locally
 
-### 1️⃣ Backend (Spring Boot)
+Backend (Spring Boot)
 
 ```bash
 cd chat-app-backend
 mvn spring-boot:run
-
 Backend runs at:
-
 http://localhost:8080
 
-2️⃣ Frontend (React)
+Frontend (React)
 cd front-chat
 npm install
 npm run dev
-
-
 Frontend runs at:
-
 http://localhost:5173
 
 🌐 WebSocket Endpoints
