@@ -39,15 +39,15 @@ This project demonstrates real-time communication, clean frontend–backend sepa
 
 Chat-App/
 │
-├── chat-app-backend/ # Spring Boot backend
-│ ├── src/
-│ ├── pom.xml
-│ └── README.md
+├── chat-app-backend/        # Spring Boot backend
+│   ├── src/
+│   ├── pom.xml
+│   └── README.md
 │
-├── front-chat/ # React frontend
-│ ├── src/
-│ ├── package.json
-│ └── README.md
+├── front-chat/              # React frontend
+│   ├── src/
+│   ├── package.json
+│   └── README.md
 │
 └── README.md
 
