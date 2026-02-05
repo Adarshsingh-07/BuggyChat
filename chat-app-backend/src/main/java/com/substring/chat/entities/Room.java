@@ -20,6 +20,4 @@ public class Room {
     @Id
     private String id; //mongodb uniqe identifier
     private String roomId;
-
-    private List<Message> messages = new ArrayList<>();
 }

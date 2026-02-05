@@ -2,17 +2,22 @@ package com.substring.chat.service.impl;
 
 import com.substring.chat.entities.Message;
 import com.substring.chat.entities.Room;
+import com.substring.chat.repositories.MessageRepository;
 import com.substring.chat.repositories.RoomRepository;
 import com.substring.chat.service.RoomService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class RoomServiceImpl implements RoomService {
-    private RoomRepository roomRepository;
-    public RoomServiceImpl( RoomRepository roomRepository) {
+    private final RoomRepository roomRepository;
+    private final MessageRepository messageRepository;
+    public RoomServiceImpl( RoomRepository roomRepository , MessageRepository messageRepository) {
         this.roomRepository = roomRepository;
+        this.messageRepository = messageRepository;
     }
 
 
@@ -27,20 +32,21 @@ public class RoomServiceImpl implements RoomService {
         }
         Room room = new Room();
         room.setRoomId(roomId);
-        roomRepository.save(room);
-        return room;
+        return roomRepository.save(room);
+
     }
    public Room getRoom(String roomId){
-       if(roomRepository.findByRoomId(roomId) == null){
+        Room room = roomRepository.findByRoomId(roomId);
+       if( room == null){
            throw new RuntimeException("Room does not exist");
        }
-       return roomRepository.findByRoomId(roomId);
+       return room;
    }
+   @Override
    public List<Message> getMessages(String roomId, int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
         Room room = getRoom(roomId);
-        List<Message> messages = room.getMessages();
-        int start =Math.max(0 , messages.size()-(page+1)*size);
-        int end = Math.min(start + size, messages.size());
-        return messages.subList(start, end);
+
+        return messageRepository.findByRoomIdOrderByTimestampDesc(roomId, pageable);
    }
 }
