@@ -18,6 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 public class Room {
     @Id
-    private String id; //mongodb uniqe identifier
+    private String id; //mongodb uniqe identifi0er
     private String roomId;
 }
