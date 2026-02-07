@@ -2,6 +2,8 @@ package com.substring.chat.service.impl;
 
 import com.substring.chat.entities.Message;
 import com.substring.chat.entities.Room;
+import com.substring.chat.exceptions.RoomAlreadyExistsException;
+import com.substring.chat.exceptions.RoomNotFoundException;
 import com.substring.chat.repositories.MessageRepository;
 import com.substring.chat.repositories.RoomRepository;
 import com.substring.chat.service.RoomService;
@@ -28,7 +30,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public Room createRoom(String roomId) {
         if(roomRepository.findByRoomId(roomId) != null){
-            throw new RuntimeException("Room already exists");
+            throw new RoomAlreadyExistsException(roomId);
         }
         Room room = new Room();
         room.setRoomId(roomId);
@@ -38,7 +40,7 @@ public class RoomServiceImpl implements RoomService {
    public Room getRoom(String roomId){
         Room room = roomRepository.findByRoomId(roomId);
        if( room == null){
-           throw new RuntimeException("Room does not exist");
+           throw new RoomNotFoundException(roomId);
        }
        return room;
    }

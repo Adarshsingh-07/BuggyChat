@@ -4,6 +4,7 @@ import com.substring.chat.entities.Message;
 import com.substring.chat.playload.MessageRequest;
 import com.substring.chat.service.ChatService;
 import com.substring.chat.service.RoomService;
+import jakarta.validation.Valid;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -25,7 +26,7 @@ public class ChatController {
         @SendTo("/topic/room/{roomId}")
        public Message sendMessage(
             @DestinationVariable String roomId,
-            @RequestBody MessageRequest request
+           @Valid @RequestBody MessageRequest request
              ) {
           return chatService.sendMessage(roomId, request);
          }

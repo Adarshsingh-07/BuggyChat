@@ -3,8 +3,10 @@ package com.substring.chat.controllers;
 
 import com.substring.chat.entities.Message;
 import com.substring.chat.entities.Room;
+import com.substring.chat.playload.RoomCreateRequest;
 import com.substring.chat.repositories.RoomRepository;
 import com.substring.chat.service.RoomService;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +25,8 @@ public class RoomController {
     }
     // CREATE ROOM
     @PostMapping
-    public ResponseEntity<?> createRoom(@RequestBody String roomId) {
-        Room room = roomService.createRoom(roomId);
+    public ResponseEntity<?> createRoom(@Valid @RequestBody RoomCreateRequest request) {
+        Room room = roomService.createRoom(request.getRoomId());
         return ResponseEntity.status(HttpStatus.CREATED).body(room);
     }
     // GET ROOM

@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @CompoundIndexes({
         @CompoundIndex(
                 name = "room_timestamp_idx",
-                def = "{'roomId':1, 'timestamp': 1}"
+                def = "{'roomId':1, 'timestamp': -1}"
         )
 })
 public class Message {
