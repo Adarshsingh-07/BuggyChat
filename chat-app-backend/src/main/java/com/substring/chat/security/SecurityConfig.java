@@ -12,8 +12,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final ApiKeyAuthFilter apiKeyAuthFilter;
-    public SecurityConfig(ApiKeyAuthFilter apiKeyAuthFilter) {
+    private final RateLimitFilter rateLimitFilter;
+    public SecurityConfig(ApiKeyAuthFilter apiKeyAuthFilter,  RateLimitFilter rateLimitFilter) {
         this.apiKeyAuthFilter = apiKeyAuthFilter;
+        this.rateLimitFilter = rateLimitFilter;
+
     }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -25,8 +28,8 @@ public class SecurityConfig {
                         .requestMatchers("/topic/**").permitAll()
                         .anyRequest().permitAll()
                 )
-                .addFilterBefore(apiKeyAuthFilter,
-                        UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(apiKeyAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(rateLimitFilter, ApiKeyAuthFilter.class)
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .formLogin(form -> form.disable());
 

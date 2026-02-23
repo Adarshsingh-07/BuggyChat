@@ -34,7 +34,7 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (SECRET_KEY.equals(apiKey)) {
+        if (secretKey.equals(apiKey)) {
             filterChain.doFilter(request, response);
         } else {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
