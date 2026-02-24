@@ -29,7 +29,7 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
 
         // Allow WebSocket handshake and actuator later (we'll refine)
         String path = request.getRequestURI();
-        if (path.startsWith("/ws") || path.startsWith("/topic")) {
+        if (path.startsWith("/ws") || path.startsWith("/topic") || path.startsWith("/actuator")) {
             filterChain.doFilter(request, response);
             return;
         }

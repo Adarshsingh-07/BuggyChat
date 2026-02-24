@@ -30,7 +30,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
         // allow websocket handshake freely
         String path = request.getRequestURI();
-        if (path.startsWith("/ws") || path.startsWith("/topic")) {
+        if (path.startsWith("/ws") || path.startsWith("/topic") || path.startsWith("/actuator")) {
             filterChain.doFilter(request, response);
             return;
         }
