@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.time.LocalDateTime;
 
 @Controller
-@CrossOrigin("http://localhost:5173")
+@CrossOrigin(origins = {"http://localhost:5173", "http://127.0.0.1:5500", "http://localhost:5500"})
 public class ChatController {
 
        private final ChatService chatService;
