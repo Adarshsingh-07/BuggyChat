@@ -19,7 +19,10 @@ import org.springframework.stereotype.Service;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class ChatServiceImpl implements ChatService {
@@ -33,6 +36,7 @@ public class ChatServiceImpl implements ChatService {
     private final RedisMessageSubscriber redisMessageSubscriber;
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper;
+    private final Set<String> subscribedChannels = ConcurrentHashMap.newKeySet();
 
     public ChatServiceImpl(RoomRepository roomRepository,
                            MessageRepository messageRepository,
@@ -62,14 +66,16 @@ public class ChatServiceImpl implements ChatService {
         message.setRoomId(roomId);
         message.setContent(request.getContent());
         message.setSender(request.getSender());
-        message.setTimestamp(LocalDateTime.now());
+        message.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 
-        // Subscribe to Redis channel for this room
+        // Subscribe to Redis channel only once per room
         String channel = "chat.room." + roomId;
-        MessageListenerAdapter adapter = new MessageListenerAdapter(redisMessageSubscriber, "onMessage");
-        adapter.afterPropertiesSet();
-        listenerContainer.addMessageListener(adapter, new PatternTopic(channel));
-        log.debug("Subscribed to Redis channel [{}]", channel);
+        if (subscribedChannels.add(channel)) {
+            MessageListenerAdapter adapter = new MessageListenerAdapter(redisMessageSubscriber, "onMessage");
+            adapter.afterPropertiesSet();
+            listenerContainer.addMessageListener(adapter, new PatternTopic(channel));
+            log.debug("Subscribed to Redis channel [{}]", channel);
+        }
 
         // Publish to Redis immediately for instant delivery
         redisMessagePublisher.publish(roomId, message);

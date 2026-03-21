@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -96,13 +97,14 @@ class RoomServiceImplTest {
         msg1.setId("1");
         msg1.setRoomId("testroom");
         msg1.setContent("Hello");
-        msg1.setTimestamp(LocalDateTime.now());
+        msg1.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+
 
         Message msg2 = new Message();
         msg2.setId("2");
         msg2.setRoomId("testroom");
         msg2.setContent("World");
-        msg2.setTimestamp(LocalDateTime.now());
+        msg2.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 
         when(roomRepository.findByRoomId("testroom")).thenReturn(testRoom);
         when(messageRepository.findByRoomIdOrderByTimestampDesc(eq("testroom"), any(Pageable.class)))

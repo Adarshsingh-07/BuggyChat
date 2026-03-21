@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Document(collection = "messages")
 @Getter
@@ -29,7 +30,7 @@ public class Message {
     private String roomId;
     private String sender;
     private String content;
-    private LocalDateTime timestamp;
+    private String timestamp;
 
 
 }

@@ -13,15 +13,16 @@ public class SecurityConfig {
 
     private final ApiKeyAuthFilter apiKeyAuthFilter;
     private final RateLimitFilter rateLimitFilter;
-    public SecurityConfig(ApiKeyAuthFilter apiKeyAuthFilter,  RateLimitFilter rateLimitFilter) {
+
+    public SecurityConfig(ApiKeyAuthFilter apiKeyAuthFilter, RateLimitFilter rateLimitFilter) {
         this.apiKeyAuthFilter = apiKeyAuthFilter;
         this.rateLimitFilter = rateLimitFilter;
-
     }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         http
+                .cors(cors -> cors.configure(http))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/ws/**").permitAll()
