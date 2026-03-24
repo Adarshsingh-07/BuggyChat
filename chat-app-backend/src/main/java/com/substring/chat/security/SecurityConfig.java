@@ -13,10 +13,14 @@ public class SecurityConfig {
 
     private final ApiKeyAuthFilter apiKeyAuthFilter;
     private final RateLimitFilter rateLimitFilter;
+    private final CorrelationIdFilter correlationIdFilter;
 
-    public SecurityConfig(ApiKeyAuthFilter apiKeyAuthFilter, RateLimitFilter rateLimitFilter) {
+    public SecurityConfig(ApiKeyAuthFilter apiKeyAuthFilter,
+                          RateLimitFilter rateLimitFilter,
+                          CorrelationIdFilter correlationIdFilter) {
         this.apiKeyAuthFilter = apiKeyAuthFilter;
         this.rateLimitFilter = rateLimitFilter;
+        this.correlationIdFilter = correlationIdFilter;
     }
 
     @Bean
@@ -30,8 +34,9 @@ public class SecurityConfig {
                         .requestMatchers("/actuator/**").permitAll()
                         .anyRequest().permitAll()
                 )
+                .addFilterBefore(correlationIdFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(apiKeyAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(rateLimitFilter, ApiKeyAuthFilter.class)
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .formLogin(form -> form.disable());
 
