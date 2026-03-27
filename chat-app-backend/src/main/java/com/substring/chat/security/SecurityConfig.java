@@ -4,6 +4,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -11,16 +13,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final ApiKeyAuthFilter apiKeyAuthFilter;
-    private final RateLimitFilter rateLimitFilter;
+    private final JwtAuthFilter jwtAuthFilter;
     private final CorrelationIdFilter correlationIdFilter;
+    private final RateLimitFilter rateLimitFilter;
 
-    public SecurityConfig(ApiKeyAuthFilter apiKeyAuthFilter,
-                          RateLimitFilter rateLimitFilter,
-                          CorrelationIdFilter correlationIdFilter) {
-        this.apiKeyAuthFilter = apiKeyAuthFilter;
-        this.rateLimitFilter = rateLimitFilter;
+    public SecurityConfig(JwtAuthFilter jwtAuthFilter,
+                          CorrelationIdFilter correlationIdFilter,
+                          RateLimitFilter rateLimitFilter) {
+        this.jwtAuthFilter = jwtAuthFilter;
         this.correlationIdFilter = correlationIdFilter;
+        this.rateLimitFilter = rateLimitFilter;
     }
 
     @Bean
@@ -29,17 +31,24 @@ public class SecurityConfig {
                 .cors(cors -> cors.configure(http))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/topic/**").permitAll()
+                        .requestMatchers("/chat/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(correlationIdFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(apiKeyAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .formLogin(form -> form.disable());
 
         return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
