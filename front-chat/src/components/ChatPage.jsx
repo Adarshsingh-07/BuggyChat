@@ -75,14 +75,15 @@ const ChatPage = () => {
       setInput("");
     }
   };
-
-  function handleLogout() {
-    if (stompClientRef.current) stompClientRef.current.disconnect();
-    setConnected(false);
-    setRoomId("");
-    setCurrentUser("");
-    navigate("/");
-  }
+function handleLogout() {
+  if (stompClientRef.current) stompClientRef.current.disconnect();
+  localStorage.removeItem("token");
+  localStorage.removeItem("username");
+  setConnected(false);
+  setRoomId("");
+  setCurrentUser("");
+  navigate("/");
+}
 
   const getAvatar = (name) =>
     `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name)}&backgroundColor=6366f1,ec4899,3b82f6&backgroundType=gradientLinear`;
